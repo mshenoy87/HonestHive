@@ -1,5 +1,6 @@
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render
+from random import randint
 
 from Waggles.models import Waggle
 
@@ -27,7 +28,7 @@ def show_waggle(request, waggle_id, *args, **kwargs):
 
 def waggles_list_view(request, *args, **kwargs):
    query_set = Waggle.objects.all()
-   waggle_list = [{"id": query.id, "waggleText": query.waggleText} for query in query_set]
+   waggle_list = [{"id": query.id, "waggleText": query.waggleText, "likes": randint(0, 10)} for query in query_set]
    data = {
       "response": waggle_list
    }

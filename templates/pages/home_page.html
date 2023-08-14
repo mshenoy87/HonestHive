@@ -6,8 +6,11 @@ Honest Hive
 
 {% block content %}
 
+<h1>
+    Welcome To Honest Hive
+</h2>
 <div id="Waggles">
-Welcome To Honest Hive
+
 </div>
 
 <script>
@@ -17,8 +20,19 @@ Welcome To Honest Hive
     const url = "/Waggles";
     const responseType = "json";
 
+    function didLike(waggle_id, currentLikes) {
+        currentLikes += 1;
+        console.log(waggle_id + "---" + currentLikes + " ------ " + (currentLikes+= 1));
+    }
+
+    function renderLikeButton(Waggle) {
+        return "<button class='btn btn-primary' onclick='didLike(" + Waggle.id + "," + Waggle.likes + ")'>" + Waggle.likes + " Likes</button>";
+    }
+
     function formatWaggles(Waggle) {
-        return "<div id='waggle-"+ Waggle.id +"'><p>" + Waggle.waggleText + "</p></div>";
+        return "<div class='mb-4 waggle' id='waggle-" 
+            + Waggle.id +"'><p>" + Waggle.waggleText
+            + "</p><div class=btnGroup>" + renderLikeButton(Waggle) + "</div></div>";
     }
 
     xmlRequest.responseType = responseType;
@@ -29,7 +43,7 @@ Welcome To Honest Hive
 
         waggleElements.innerHtml = "";
         var finalString = "";
-        for (var i = 0; i < listedItems.length; i++) {
+        for (var i = listedItems.length - 1; i >= 0; i--) {
             currentItem = formatWaggles(listedItems[i]);
             finalString += currentItem;
         }
