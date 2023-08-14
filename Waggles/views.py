@@ -3,11 +3,12 @@ from django.shortcuts import render
 
 from Waggles.models import Waggle
 
-def home_page(request, *args, **kwargs):
-   return HttpResponse("<h1>HelloWorld</h>")
-    # return render(request, template_name="pages/homePage.html", context= {}, status=200)
 
 # Create your views here.
+def home_page(request, *args, **kwargs):
+    return render(request, template_name="pages/home_page.html", context= {}, status=200)
+
+# shows a waggle as a dumped json dictionary depending on the id
 def show_waggle(request, waggle_id, *args, **kwargs):
    # page we will be seeing goes here
     data = {
@@ -20,7 +21,14 @@ def show_waggle(request, waggle_id, *args, **kwargs):
     except:
       data["message"] = "Not Found"
       status = 404
-    #   raise Http404
+    
     # renders the data from DB
     return JsonResponse(data, status=status)
-    # return HttpResponse(f"<h1> {waggle_id} - {waggleObject.waggleText}</h>")
+
+def waggles_list_view(request, *args, **kwargs):
+   query_set = Waggle.objects.all()
+   waggle_list = [{"id": query.id, "waggleText": query.waggleText} for query in query_set]
+   data = {
+      "response": waggle_list
+   }
+   return JsonResponse(data)

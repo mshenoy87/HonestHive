@@ -21,5 +21,6 @@ from Waggles.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", home_page),
-    path("waggle/<int:waggle_id>", show_waggle),
+    path("waggles/<int:waggle_id>", show_waggle),
+    path("waggles", waggles_list_view)
 ]
