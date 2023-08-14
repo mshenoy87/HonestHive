@@ -8,3 +8,5 @@ Some configs you may need to have for starting and being able to see the webpage
     - pipenv install --python [insert version of python here without brackets] django
   - create a virtual environment
     - pipenv shell
+  - run the server
+    - ./manage runserver
