@@ -5,5 +5,39 @@ Honest Hive
 {% endblock %}
 
 {% block content %}
-HIIIII
+
+<div id="Waggles">
+Welcome To Honest Hive
+</div>
+
+<script>
+    const waggleElements = document.getElementById("Waggles");
+    const xmlRequest = new XMLHttpRequest();
+    const method = 'GET';
+    const url = "/Waggles";
+    const responseType = "json";
+
+    function formatWaggles(Waggle) {
+        return "<div id='waggle-"+ Waggle.id +"'><p>" + Waggle.waggleText + "</p></div>";
+    }
+
+    xmlRequest.responseType = responseType;
+    xmlRequest.open(method, url);
+    xmlRequest.onload = function() {
+        const xmlServerResponse = xmlRequest.response;
+        var listedItems = xmlServerResponse.response;
+
+        waggleElements.innerHtml = "";
+        var finalString = "";
+        for (var i = 0; i < listedItems.length; i++) {
+            currentItem = formatWaggles(listedItems[i]);
+            finalString += currentItem;
+        }
+        waggleElements.innerHTML += finalString;
+        console.log(finalString)
+    }
+
+    xmlRequest.send()
+
+</script>
 {% endblock content %}
