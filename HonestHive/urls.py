@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from Waggles.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("", home_page),
+    path("waggle/<int:waggle_id>", show_waggle),
 ]
