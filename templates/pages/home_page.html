@@ -6,9 +6,24 @@ Honest Hive
 
 {% block content %}
 
-<h1>
-    Welcome To Honest Hive
-</h2>
+<div class='row text-center'>
+    <div class='col'>
+        <h1>Welcome To Honest Hive</h>
+    </div>
+</div>
+
+<div class='row mb-2'>
+    <div class='col-md-4 mx-auto col-10'>
+        <form class='form' method='POST' action='/create-waggle'>
+            <input type='hidden' value='/' name='next' />
+            {% csrf_token %}
+            <textarea class='form-control' name='waggleText' placeholder='Your waggle'></textarea>
+            <button type='submit' class='btn btn-primary'>Send</button>
+        </form>  
+    </div>
+    </form>
+</div>
+
 <div id="Waggles">
 
 </div>
@@ -30,7 +45,7 @@ Honest Hive
     }
 
     function formatWaggles(Waggle) {
-        return "<div class='mb-4 waggle' id='waggle-" 
+        return "<div class='col-12 mb-4 waggle border px-2 py-3' id='waggle-" 
             + Waggle.id +"'><p>" + Waggle.waggleText
             + "</p><div class=btnGroup>" + renderLikeButton(Waggle) + "</div></div>";
     }
