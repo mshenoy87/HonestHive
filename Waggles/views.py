@@ -1,9 +1,13 @@
+from django.conf import settings
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
 from random import randint
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from Waggles.models import Waggle
 from Waggles.forms import WaggleForm
+
+ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
 # Create your views here.
 def home_page(request, *args, **kwargs):
@@ -17,7 +21,7 @@ def waggle_create_view(request, *args, **kwargs):
    if form.is_valid():
       obj = form.save(commit=False)
       obj.save()
-      if next_url != None:
+      if next_url != None and url_has_allowed_host_and_scheme(next_url, ALLOWED_HOSTS):
          return redirect(next_url)
       form = WaggleForm()
    return render(request, 'components/forms.html', context = {"form": form})

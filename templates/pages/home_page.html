@@ -14,9 +14,9 @@ Honest Hive
 
 <div class='row mb-2'>
     <div class='col-md-4 mx-auto col-10'>
-        <form class='form' method='POST' action='/create-waggle'>
-            <input type='hidden' value='/' name='next' />
+        <form class='form' method='POST' id='waggle-create-form' action='/create-waggle'>
             {% csrf_token %}
+            <input type='hidden' value='/' name='next' />
             <textarea class='form-control' name='waggleText' placeholder='Your waggle'></textarea>
             <button type='submit' class='btn btn-primary'>Send</button>
         </form>  
@@ -24,24 +24,67 @@ Honest Hive
     </form>
 </div>
 
-<div id="Waggles">
+<div class='row' id="Waggles">
 
 </div>
 
 <script>
+
+    function waggleCreateFormSubmit(event) {
+        event.preventDefault();
+        const myForm = event.target;
+        const formData = new FormData(myForm);
+        const url = myForm.getAttribute("action");
+        const method = myForm.getAttribute("method");
+        
+        const xmlRequest = new XMLHttpRequest();
+        xmlRequest.open(method, url);
+        xmlRequest.onload = function() {
+            const xmlServerResponse = xmlRequest.response;
+            const waggleEl = document.getElementById("Waggles");
+            loadWaggles(waggleEl);
+        }
+        xmlRequest.send(formData);
+
+    }
+    
+    const waggleCreateFormElement = document.getElementById("waggle-create-form");
+    waggleCreateFormElement.addEventListener("submit", waggleCreateFormSubmit);
     const waggleElements = document.getElementById("Waggles");
-    const xmlRequest = new XMLHttpRequest();
-    const method = 'GET';
-    const url = "/Waggles";
-    const responseType = "json";
+
+    function loadWaggles(waggles) {
+        const xmlRequest = new XMLHttpRequest();
+        const method = 'GET';
+        const url = "/Waggles";
+        const responseType = "json";
+
+        xmlRequest.responseType = responseType;
+        xmlRequest.open(method, url);
+        xmlRequest.onload = function() {
+            const xmlServerResponse = xmlRequest.response;
+            var listedItems = xmlServerResponse.response;
+    
+            waggles.innerHtml = "";
+            var finalString = "";
+            for (var i = listedItems.length - 1; i >= 0; i--) {
+                currentItem = formatWaggles(listedItems[i]);
+                finalString += currentItem;
+            }
+            waggles.innerHTML = finalString;
+        }
+    
+        xmlRequest.send();
+    }
+
+    loadWaggles(waggleElements);
 
     function didLike(waggle_id, currentLikes) {
+        likeButton = 
         currentLikes += 1;
-        console.log(waggle_id + "---" + currentLikes + " ------ " + (currentLikes+= 1));
     }
 
     function renderLikeButton(Waggle) {
-        return "<button class='btn btn-primary' onclick='didLike(" + Waggle.id + "," + Waggle.likes + ")'>" + Waggle.likes + " Likes</button>";
+        return "<button id='likebtn' class='btn btn-primary' onclick='didLike(" + Waggle.id + "," + Waggle.likes + ")'>" + Waggle.likes + " Likes</button>";
     }
 
     function formatWaggles(Waggle) {
@@ -49,24 +92,6 @@ Honest Hive
             + Waggle.id +"'><p>" + Waggle.waggleText
             + "</p><div class=btnGroup>" + renderLikeButton(Waggle) + "</div></div>";
     }
-
-    xmlRequest.responseType = responseType;
-    xmlRequest.open(method, url);
-    xmlRequest.onload = function() {
-        const xmlServerResponse = xmlRequest.response;
-        var listedItems = xmlServerResponse.response;
-
-        waggleElements.innerHtml = "";
-        var finalString = "";
-        for (var i = listedItems.length - 1; i >= 0; i--) {
-            currentItem = formatWaggles(listedItems[i]);
-            finalString += currentItem;
-        }
-        waggleElements.innerHTML += finalString;
-        console.log(finalString)
-    }
-
-    xmlRequest.send()
 
 </script>
 {% endblock content %}
