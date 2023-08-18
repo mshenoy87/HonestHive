@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
-from random import randint
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from Waggles.models import Waggle
@@ -21,7 +20,10 @@ def waggle_create_view(request, *args, **kwargs):
    if form.is_valid():
       obj = form.save(commit=False)
       obj.save()
+      if request.accepts(media_type=None):
+         return JsonResponse(obj.serialize(), status=201)
       if next_url != None and url_has_allowed_host_and_scheme(next_url, ALLOWED_HOSTS):
+         # redirect to a safe page (next_url)
          return redirect(next_url)
       form = WaggleForm()
    return render(request, 'components/forms.html', context = {"form": form})
@@ -46,8 +48,9 @@ def show_waggle(request, waggle_id, *args, **kwargs):
 def waggles_list_view(request, *args, **kwargs):
    query_set = Waggle.objects.all()
    # Save everything in database into a list of dictionaries
-   waggle_list = [{"id": query.id, "waggleText": query.waggleText, "likes": randint(0, 10)} for query in query_set]
+   waggle_list = [query.serialize() for query in query_set]
    data = {
+      "isUser": False,
       "response": waggle_list
    }
    return JsonResponse(data)

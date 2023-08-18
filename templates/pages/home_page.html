@@ -39,8 +39,11 @@ Honest Hive
         
         const xmlRequest = new XMLHttpRequest();
         xmlRequest.open(method, url);
+        xmlRequest.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
+        xmlRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest")
         xmlRequest.onload = function() {
             const xmlServerResponse = xmlRequest.response;
+            console.log(xmlServerResponse);
             const waggleEl = document.getElementById("Waggles");
             loadWaggles(waggleEl);
         }
@@ -61,9 +64,9 @@ Honest Hive
         xmlRequest.responseType = responseType;
         xmlRequest.open(method, url);
         xmlRequest.onload = function() {
+            // create a XML request to get and send information about the waggles created (from the)
             const xmlServerResponse = xmlRequest.response;
             var listedItems = xmlServerResponse.response;
-    
             waggles.innerHtml = "";
             var finalString = "";
             for (var i = listedItems.length - 1; i >= 0; i--) {
@@ -79,18 +82,21 @@ Honest Hive
     loadWaggles(waggleElements);
 
     function didLike(waggle_id, currentLikes) {
-        likeButton = 
+        var button = document.getElementById("waggle-" + waggle_id).getElementsByClassName("btnGroup")[0].querySelectorAll(".btn")[0];
         currentLikes += 1;
+        button.innerHTML = currentLikes + " Likes";
     }
 
     function renderLikeButton(Waggle) {
+        // renders like button and gets called in format waggles function
         return "<button id='likebtn' class='btn btn-primary' onclick='didLike(" + Waggle.id + "," + Waggle.likes + ")'>" + Waggle.likes + " Likes</button>";
     }
 
     function formatWaggles(Waggle) {
+        // format waggles so that there is the message and a button for liking that message
         return "<div class='col-12 mb-4 waggle border px-2 py-3' id='waggle-" 
             + Waggle.id +"'><p>" + Waggle.waggleText
-            + "</p><div class=btnGroup>" + renderLikeButton(Waggle) + "</div></div>";
+            + "</p><div class='btnGroup'>" + renderLikeButton(Waggle) + "</div></div>";
     }
 
 </script>
