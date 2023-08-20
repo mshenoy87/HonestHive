@@ -17,7 +17,7 @@ Honest Hive
         <form class='form' method='POST' id='waggle-create-form' action='/create-waggle'>
             {% csrf_token %}
             <input type='hidden' value='/' name='next' />
-            <textarea class='form-control' name='waggleText' placeholder='Your waggle'></textarea>
+            <textarea required='required' class='form-control' name='waggleText' placeholder='Your waggle'></textarea>
             <button type='submit' class='btn btn-primary'>Send</button>
         </form>  
     </div>
@@ -30,22 +30,29 @@ Honest Hive
 
 <script>
 
+    const waggleElements = document.getElementById("Waggles");
+
     function waggleCreateFormSubmit(event) {
         event.preventDefault();
         const myForm = event.target;
         const formData = new FormData(myForm);
         const url = myForm.getAttribute("action");
         const method = myForm.getAttribute("method");
+        const responseType = "json";
         
         const xmlRequest = new XMLHttpRequest();
         xmlRequest.open(method, url);
+        xmlRequest.responseType = responseType;
         xmlRequest.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
         xmlRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest")
         xmlRequest.onload = function() {
-            const xmlServerResponse = xmlRequest.response;
-            console.log(xmlServerResponse);
-            const waggleEl = document.getElementById("Waggles");
-            loadWaggles(waggleEl);
+            if (xmlRequest.status === 201){
+                // if request status is "created", parse the request response then prepend to inner HTML of waggle elements
+                const xmlResponseJSON = xmlRequest.response;
+                const newWaggle = formatWaggles(xmlResponseJSON);
+                waggleElements.innerHTML = newWaggle + waggleElements.innerHTML;
+
+            }
         }
         xmlRequest.send(formData);
 
@@ -53,7 +60,6 @@ Honest Hive
     
     const waggleCreateFormElement = document.getElementById("waggle-create-form");
     waggleCreateFormElement.addEventListener("submit", waggleCreateFormSubmit);
-    const waggleElements = document.getElementById("Waggles");
 
     function loadWaggles(waggles) {
         const xmlRequest = new XMLHttpRequest();
@@ -69,7 +75,7 @@ Honest Hive
             var listedItems = xmlServerResponse.response;
             waggles.innerHtml = "";
             var finalString = "";
-            for (var i = listedItems.length - 1; i >= 0; i--) {
+            for (var i = 0; i < listedItems.length; i++) {
                 currentItem = formatWaggles(listedItems[i]);
                 finalString += currentItem;
             }
