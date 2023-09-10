@@ -6,38 +6,104 @@ Honest Hive
 
 {% block content %}
 
-<div id="Waggles">
-Welcome To Honest Hive
+<div class='row text-center'>
+    <div class='col'>
+        <h1>Welcome To Honest Hive</h>
+    </div>
+</div>
+
+<div class='row mb-2'>
+    <div class='col-md-4 mx-auto col-10'>
+        <form class='form' method='POST' id='waggle-create-form' action='/create-waggle'>
+            {% csrf_token %}
+            <input type='hidden' value='/' name='next' />
+            <textarea required='required' class='form-control' name='waggleText' placeholder='Your waggle'></textarea>
+            <button type='submit' class='btn btn-primary'>Send</button>
+        </form>  
+    </div>
+    </form>
+</div>
+
+<div class='row' id="Waggles">
+
 </div>
 
 <script>
+
     const waggleElements = document.getElementById("Waggles");
-    const xmlRequest = new XMLHttpRequest();
-    const method = 'GET';
-    const url = "/Waggles";
-    const responseType = "json";
+
+    function waggleCreateFormSubmit(event) {
+        event.preventDefault();
+        const myForm = event.target;
+        const formData = new FormData(myForm);
+        const url = myForm.getAttribute("action");
+        const method = myForm.getAttribute("method");
+        const responseType = "json";
+        
+        const xmlRequest = new XMLHttpRequest();
+        xmlRequest.open(method, url);
+        xmlRequest.responseType = responseType;
+        xmlRequest.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
+        xmlRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+        xmlRequest.onload = function() {
+            if (xmlRequest.status === 201){
+                // if request status is "created", parse the request response then prepend to inner HTML of waggle elements
+                const xmlResponseJSON = xmlRequest.response;
+                const newWaggle = formatWaggles(xmlResponseJSON);
+                waggleElements.innerHTML = newWaggle + waggleElements.innerHTML;
+
+            }
+        }
+        xmlRequest.send(formData);
+
+    }
+    
+    const waggleCreateFormElement = document.getElementById("waggle-create-form");
+    waggleCreateFormElement.addEventListener("submit", waggleCreateFormSubmit);
+
+    function loadWaggles(waggles) {
+        const xmlRequest = new XMLHttpRequest();
+        const method = 'GET';
+        const url = "/Waggles";
+        const responseType = "json";
+
+        xmlRequest.responseType = responseType;
+        xmlRequest.open(method, url);
+        xmlRequest.onload = function() {
+            // create a XML request to get and send information about the waggles created (from the)
+            const xmlServerResponse = xmlRequest.response;
+            var listedItems = xmlServerResponse.response;
+            waggles.innerHtml = "";
+            var finalString = "";
+            for (var i = 0; i < listedItems.length; i++) {
+                currentItem = formatWaggles(listedItems[i]);
+                finalString += currentItem;
+            }
+            waggles.innerHTML = finalString;
+        }
+    
+        xmlRequest.send();
+    }
+
+    loadWaggles(waggleElements);
+
+    function didLike(waggle_id, currentLikes) {
+        var button = document.getElementById("waggle-" + waggle_id).getElementsByClassName("btnGroup")[0].querySelectorAll(".btn")[0];
+        currentLikes += 1;
+        button.innerHTML = currentLikes + " Likes";
+    }
+
+    function renderLikeButton(Waggle) {
+        // renders like button and gets called in format waggles function
+        return "<button id='likebtn' class='btn btn-primary' onclick='didLike(" + Waggle.id + "," + Waggle.likes + ")'>" + Waggle.likes + " Likes</button>";
+    }
 
     function formatWaggles(Waggle) {
-        return "<div id='waggle-"+ Waggle.id +"'><p>" + Waggle.waggleText + "</p></div>";
+        // format waggles so that there is the message and a button for liking that message
+        return "<div class='col-12 mb-4 waggle border px-2 py-3' id='waggle-" 
+            + Waggle.id +"'><p>" + Waggle.waggleText
+            + "</p><div class='btnGroup'>" + renderLikeButton(Waggle) + "</div></div>";
     }
-
-    xmlRequest.responseType = responseType;
-    xmlRequest.open(method, url);
-    xmlRequest.onload = function() {
-        const xmlServerResponse = xmlRequest.response;
-        var listedItems = xmlServerResponse.response;
-
-        waggleElements.innerHtml = "";
-        var finalString = "";
-        for (var i = 0; i < listedItems.length; i++) {
-            currentItem = formatWaggles(listedItems[i]);
-            finalString += currentItem;
-        }
-        waggleElements.innerHTML += finalString;
-        console.log(finalString)
-    }
-
-    xmlRequest.send()
 
 </script>
 {% endblock content %}
