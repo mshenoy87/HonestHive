@@ -15,13 +15,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
 from Waggles.views import *
+from accounts.views import *
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path("", home_page),
-    path("create-waggle", waggle_create_view),
-    path("Waggles/<int:waggle_id>", show_waggle),
-    path("Waggles", waggles_list_view)
+    path('admin/', admin.site.urls),
+    path("login/", login_page),
+    path("logout/", logout_page),
+    re_path(r'profiles?/', include('profiles.urls')),
+    path("register/", register_page),
+    path('api/waggles/', include('Waggles.api.urls')),
+    path('api/profiles/', include('profiles.api.urls')),
+    path('react/', TemplateView.as_view(template_name='react.html')),
+    
 ]
+
+# if settings.DEBUG:
+#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

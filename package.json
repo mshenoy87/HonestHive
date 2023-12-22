@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "ol": "^8.0.1-dev.1693918133793",
+    "postinstall": "patch-package",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
+    "react-router-dom": "^6.16.0"
+  }
+}
