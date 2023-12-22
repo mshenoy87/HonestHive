@@ -9,7 +9,7 @@ class WaggleForm(forms.ModelForm):
         model = Waggle
         fields = ["waggleText"]
 
-    def clean_content(self):
+    def clean_content():
         content = self.cleaned_data.get("waggleText")
         if (len(content) > MAX_WAGGLE_LENGTH):
             raise forms.ValidationError("This waggle is too long!")

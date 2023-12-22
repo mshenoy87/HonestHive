@@ -26,11 +26,7 @@ SECRET_KEY = 'django-insecure-(+=qx7ir%%ux-90d-mrdm&am9t=saan403ru1n_e&j(nanv&(3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.cfe.sh', 'localhost']
-MAX_WAGGLE_LENGTH = 240
-LOGIN_URL = "/login/"
-
-WAGGLE_ACTION_OPTIONS = ["like", "unlike", "rewaggle"]
+ALLOWED_HOSTS = ['127.0.0.1', '.cfe.sh']
 
 
 # Application definition
@@ -43,19 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # third party
-    'corsheaders',
-    'rest_framework',
-    # internal apps
-    'profiles',
-    'accounts',
     'Waggles',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -129,37 +118,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
-STATIC_ROOT = os.path.join(BASE_DIR, "static-root")
-
-CORS_ALLOW_ALL_ORIGINS = True    # any website has access to my api
-CORS_URLS_REGEX = r'^.*$'
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-DEFAULT_RENDERER_CLASSES = [
-    'rest_framework.renderers.JSONRenderer',     
-]
-
-DEFAULT_AUTHENTICATION_CLASSES = [
-    'rest_framework.authentication.SessionAuthentication'
-]
-
-if DEBUG:
-    DEFAULT_RENDERER_CLASSES += [
-        'rest_framework.renderers.BrowsableAPIRenderer'
-    ]
-    # delete this later potentially (KEEP ONLY FOR TESTING)
-    DEFAULT_AUTHENTICATION_CLASSES += [
-        'HonestHive.rest_api.dev.DevAuthentication'
-    ]
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': DEFAULT_AUTHENTICATION_CLASSES,
-    # 'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
-}
