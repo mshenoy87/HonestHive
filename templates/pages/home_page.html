@@ -14,11 +14,11 @@ Honest Hive
 
 <div class='row mb-2'>
     <div class='col-md-4 mx-auto col-10'>
-        <form class='form' method='POST' id='waggle-create-form' action='/create/'>
+        <form class='form' method='POST' id='waggle-create-form' action='/create-waggle'>
             {% csrf_token %}
             <input type='hidden' value='/' name='next' />
             <textarea required='required' class='form-control' name='waggleText' placeholder='Your waggle'></textarea>
-            <button type='submit' class='btn btn-primary'>Waggle</button>
+            <button type='submit' class='btn btn-primary'>Send</button>
         </form>  
     </div>
     </form>
@@ -30,22 +30,6 @@ Honest Hive
 
 <script>
 
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    
     const waggleElements = document.getElementById("Waggles");
 
     function waggleCreateFormSubmit(event) {
@@ -64,36 +48,32 @@ Honest Hive
         xmlRequest.onload = function() {
             if (xmlRequest.status === 201){
                 // if request status is "created", parse the request response then prepend to inner HTML of waggle elements
-                const xmlResponseJSON = xmlRequest.response.results;
+                const xmlResponseJSON = xmlRequest.response;
                 const newWaggle = formatWaggles(xmlResponseJSON);
                 waggleElements.innerHTML = newWaggle + waggleElements.innerHTML;
 
-                
-            } 
-            // else if (xmlRequest.status === 403) {
-            //     alert("you must be logged in");
-            //     window.location.href = "/login"
-            // }
-            xmlRequest.send(formData);
-
+            }
         }
+        xmlRequest.send(formData);
+
     }
+    
     const waggleCreateFormElement = document.getElementById("waggle-create-form");
     waggleCreateFormElement.addEventListener("submit", waggleCreateFormSubmit);
 
     function loadWaggles(waggles) {
         const xmlRequest = new XMLHttpRequest();
         const method = 'GET';
-        const url = "api/waggles/";
+        const url = "/Waggles";
         const responseType = "json";
+
         xmlRequest.responseType = responseType;
         xmlRequest.open(method, url);
-
         xmlRequest.onload = function() {
             // create a XML request to get and send information about the waggles created (from the)
-            const xmlServerResponse = xmlRequest.response.results;
-
-            var listedItems = xmlServerResponse;
+            const xmlServerResponse = xmlRequest.response;
+            var listedItems = xmlServerResponse.response;
+            waggles.innerHtml = "";
             var finalString = "";
             for (var i = 0; i < listedItems.length; i++) {
                 currentItem = formatWaggles(listedItems[i]);
@@ -101,59 +81,28 @@ Honest Hive
             }
             waggles.innerHTML = finalString;
         }
-
+    
         xmlRequest.send();
     }
 
     loadWaggles(waggleElements);
 
-    function handleAction(waggle_id, currentLikes, action) {
-        const url = "api/waggles/action/"
-        const method = 'POST'
-        const csrftoken = getCookie('csrftoken');
-
-        const data = JSON.stringify({
-            id: waggle_id,
-            action: action
-        })
-
-        const xmlRequest = new XMLHttpRequest();
-        xmlRequest.open(method, url);
-
-        xmlRequest.setRequestHeader("Content-Type", "application/json");
-        xmlRequest.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
-        xmlRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        xmlRequest.setRequestHeader("X-CSRFToken", csrftoken);
-        xmlRequest.onload = function() {
-            loadWaggles(waggleElements); // reloads waggles after a like 
-        }
-        xmlRequest.send(data);
+    function didLike(waggle_id, currentLikes) {
+        var button = document.getElementById("waggle-" + waggle_id).getElementsByClassName("btnGroup")[0].querySelectorAll(".btn")[0];
+        currentLikes += 1;
+        button.innerHTML = currentLikes + " Likes";
     }
 
     function renderLikeButton(Waggle) {
         // renders like button and gets called in format waggles function
-        return "<button id='likebtn' class='btn btn-primary btn-sm' onclick=handleAction(" + Waggle.id + "," + Waggle.likes + ",'like')>" + Waggle.likes + " Likes</button>";
-    }
-
-    function renderUnlikeButton(Waggle) {
-        // renders like button and gets called in format waggles function
-        return "<button id='unlikebtn' class='btn btn-outline-primary btn-sm' onclick=handleAction(" + Waggle.id + "," + Waggle.likes + ",'unlike')> Unlike </button>";
-    }
-
-    function renderRewaggleButton(Waggle) {
-        // renders like button and gets called in format waggles function
-        return "<button id='rewagglebtn' class='btn btn-outline-success btn-sm' onclick=handleAction(" + Waggle.id + "," + Waggle.likes + ",'rewaggle')> Rewaggle </button>";
+        return "<button id='likebtn' class='btn btn-primary' onclick='didLike(" + Waggle.id + "," + Waggle.likes + ")'>" + Waggle.likes + " Likes</button>";
     }
 
     function formatWaggles(Waggle) {
         // format waggles so that there is the message and a button for liking that message
-        return "<div class='col-12 mb-4 border px-2 py-3' id='waggle-" 
-            + Waggle.id +"'><p>" + Waggle.user.username + "</p><p>" + Waggle.waggleText
-            + "</p><div class='btnGroup'>"
-                 + renderLikeButton(Waggle)
-                 + renderUnlikeButton(Waggle) 
-                 + renderRewaggleButton(Waggle)
-                 + "</div></div>";
+        return "<div class='col-12 mb-4 waggle border px-2 py-3' id='waggle-" 
+            + Waggle.id +"'><p>" + Waggle.waggleText
+            + "</p><div class='btnGroup'>" + renderLikeButton(Waggle) + "</div></div>";
     }
 
 </script>
