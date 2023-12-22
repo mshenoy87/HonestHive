@@ -10,3 +10,4 @@ Some configs you may need to have for starting and being able to see the webpage
     - pipenv shell
   - run the server
     - ./manage runserver
+

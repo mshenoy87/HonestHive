@@ -1,3 +1,5 @@
+node_modules/
+
 # Binaries for programs and plugins
 GOALS.md
 db.sqlite3
