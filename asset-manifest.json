@@ -1,16 +1,15 @@
 {
   "files": {
     "main.css": "/HonestHive/static/css/main.703e4cbe.css",
-    "main.js": "/HonestHive/static/js/main.df2a4f17.js",
+    "main.js": "/HonestHive/static/js/main.9c2d8884.js",
     "static/js/453.e70fa74b.chunk.js": "/HonestHive/static/js/453.e70fa74b.chunk.js",
-    "static/media/logo.svg": "/HonestHive/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/HonestHive/index.html",
     "main.703e4cbe.css.map": "/HonestHive/static/css/main.703e4cbe.css.map",
-    "main.df2a4f17.js.map": "/HonestHive/static/js/main.df2a4f17.js.map",
+    "main.9c2d8884.js.map": "/HonestHive/static/js/main.9c2d8884.js.map",
     "453.e70fa74b.chunk.js.map": "/HonestHive/static/js/453.e70fa74b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.703e4cbe.css",
-    "static/js/main.df2a4f17.js"
+    "static/js/main.9c2d8884.js"
   ]
 }
