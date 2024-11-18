@@ -1,0 +1,35 @@
+.user_input {
+    border-radius: 10px;
+    width: 50vi;
+    padding: 10px;
+    background-color: rgb(46, 46, 22);
+    color:rgb(245, 245, 125);
+    height: auto;
+  }
+  
+  .user_input::placeholder {
+    color:rgb(185, 185, 142)
+  }
+
+  .analysis_area {
+    background-color: rgb(47, 47, 24);
+    color: rgb(245, 245, 125);
+    border-radius: 15px;
+    width: 75%;
+    border: 0.5px solid rgb(30, 30, 12);
+    padding: 20px;
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-warning {
+    background-color: #FDA521;
+    border-radius: 10px;
+    border-color: #FDA521;
+    padding: 10px;
+  }
+
+.App {
+    padding: 5px;
+}
